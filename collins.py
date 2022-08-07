@@ -1,4 +1,5 @@
 from requests_html import HTMLSession
+from utils import get_int
 
 def get_collins_data():
     session = HTMLSession()
@@ -15,8 +16,10 @@ def get_collins_data():
 
         listing_data = {
             'title': details.html.find('span.street-address', first=True).text,
-            'city': details.html.find('div.prop-address', first=True).text
+            'city': details.html.find('div.prop-address', first=True).text,
+            'price': get_int(details.html.find('div.prop-rent.text-alt', first=True).text)
         }
+
         rentals.append(listing_data)
 
     print(rentals)

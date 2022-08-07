@@ -1,6 +1,7 @@
 import re
 import requests
 from bs4 import BeautifulSoup
+from utils import get_int
 
 def extract_paul_law_data():
     res = requests.get('https://paullawpropertymanagement.managebuilding.com/Resident/public/rentals')
@@ -42,7 +43,3 @@ def extract_paul_law_data():
         rentals.append(listing_data)
 
     return rentals
-
-def get_int(str):
-    num_str = ''.join(re.findall(r'\d+', str))
-    return int(num_str)
