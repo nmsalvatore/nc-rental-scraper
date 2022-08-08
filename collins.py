@@ -39,7 +39,6 @@ def get_collins_data():
         # get bathrooms
         bath_regex = re.compile(r'\s*(.*)\sba')
         bath_str = html.find('div.prop-baths', first=True).text
-
         try:
             bathrooms = int(bath_regex.search(bath_str).group(1))
         except:
@@ -59,10 +58,8 @@ def get_collins_data():
             'url': url,
         }
 
-        print(f'\n{listing_data}\n')
         rentals.append(listing_data)
-
-    print('\nScraping complete.\n')
+    
     return rentals
 
 get_collins_data()
