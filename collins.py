@@ -61,5 +61,3 @@ def get_collins_data():
         rentals.append(listing_data)
     
     return rentals
-
-get_collins_data()
