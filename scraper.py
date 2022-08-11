@@ -1,8 +1,9 @@
-import re
-import requests
-from bs4 import BeautifulSoup
-from paullaw import extract_paul_law_data
+from paullaw import get_paul_law_data
+from collins import get_collins_data
 
-paul_law_data = extract_paul_law_data()
-rentals = paul_law_data
-print(rentals)
+print('\nRetrieving all available rental data...\n')
+
+paul_law_data = get_paul_law_data()
+collins_data = get_collins_data()
+
+print('Rental data retrieved successfully.\n')
