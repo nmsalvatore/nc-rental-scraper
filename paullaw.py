@@ -34,11 +34,16 @@ def get_paul_law_data():
         # get bed, bath and square footage
         unit_info = detail_html.find_all(class_='unit-detail__unit-info-item')
         for item in unit_info:
-            if re.compile(r'.*Bed.*').search(item.getText()):
+            bed_regex = re.compile(r'.*Bed.*')
+            if bed_regex.search(item.getText()):
                 bedrooms = get_int(item.getText())
-            if re.compile(r'.*Bath.*').search(item.getText()):
+
+            bath_regex = re.compile(r'.*Bath.*')
+            if bath_regex.search(item.getText()):
                 bathrooms = get_int(item.getText())
-            if re.compile(r'.*sqft.*').search(item.getText()):
+
+            sqft_regex = re.compile(r'.*sqft.*')
+            if sqft_regex.search(item.getText()):
                 sqft = get_int(item.getText())
 
         listing_data = {
