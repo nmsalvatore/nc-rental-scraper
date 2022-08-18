@@ -56,6 +56,7 @@ def get_paul_law_data():
             'url': url,
         }
 
+        print(listing_data)
         rentals.append(listing_data)
 
     return rentals

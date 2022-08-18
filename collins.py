@@ -58,6 +58,7 @@ def get_collins_data():
             'url': url,
         }
 
+        print(listing_data)
         rentals.append(listing_data)
     
     return rentals
