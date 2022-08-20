@@ -32,8 +32,11 @@ def get_pam_data(driver):
         city = address_groups.group(2).strip()
 
         # get price
-        price_str = listing.find(class_='rent').getText()
-        price = get_int(price_str)
+        try:
+            price_str = listing.find(class_='rent').getText()
+            price = get_int(price_str)
+        except:
+            continue
 
         # get bedrooms
         bedrooms_str = listing.find(class_='beds').getText()
@@ -62,7 +65,6 @@ def get_pam_data(driver):
             'url': url,
         }
 
-        print(listing_data)
         rentals.append(listing_data)
 
     return rentals

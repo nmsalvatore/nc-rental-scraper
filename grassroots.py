@@ -67,7 +67,6 @@ def get_grass_roots_data(driver):
             'url': url,
         }
 
-        print(listing_data)
         rentals.append(listing_data)
 
     return rentals

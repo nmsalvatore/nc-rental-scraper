@@ -65,7 +65,6 @@ def get_acm_data(driver):
             'url': url,
         }
 
-        print(listing_data)
         rentals.append(listing_data)
 
     return rentals

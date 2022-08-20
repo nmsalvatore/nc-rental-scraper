@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 from utils import get_int
 
 def get_paul_law_data():
-    root = 'https://paullawpropertymanagement.managebuilding.com/'
+    root = 'https://paullawpropertymanagement.managebuilding.com'
     res = requests.get(root + '/Resident/public/rentals')
     soup = BeautifulSoup(res.text, 'lxml')
 
@@ -56,7 +56,6 @@ def get_paul_law_data():
             'url': url,
         }
 
-        print(listing_data)
         rentals.append(listing_data)
 
     return rentals
