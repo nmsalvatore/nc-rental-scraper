@@ -5,7 +5,7 @@ from acm import get_acm_data
 from grassroots import get_grass_roots_data
 from selenium import webdriver
 
-print('\nRetrieving all available rental data...\n')
+print('\nChecking for new listings...\n')
 
 paul_law_data = get_paul_law_data()
 collins_data = get_collins_data()
@@ -17,7 +17,6 @@ acm_data = get_acm_data(driver)
 grass_roots_data = get_grass_roots_data(driver)
 driver.close()
 
-# rentals = paul_law_data + collins_data + pam_data
-rentals = paul_law_data + collins_data + pam_data + acm_data + grass_roots_data
-rental_num = len(rentals)
-print(f'\n{rental_num} rentals retrieved successfully.\n')
+def get_all_rentals():
+    rentals = paul_law_data + collins_data + pam_data + acm_data + grass_roots_data
+    return rentals
