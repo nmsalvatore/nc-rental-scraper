@@ -50,6 +50,19 @@ for rental in rentals:
 
         new_listing_count += 1
 
+# remove old listings
+new_listing_urls = [rental.get('url') for rental in rentals]
+cur.execute(f'SELECT url FROM nc_rentals_listing')
+db_listing_urls = cur.fetchall()
+db_removed_count = 0
+
+for db_listing_url in db_listing_urls:
+    db_listing_url = db_listing_url[0]
+    if db_listing_url in new_listing_urls:
+        continue
+    cur.execute(f"DELETE FROM nc_rentals_listing WHERE url = '{db_listing_url}'")
+    db_removed_count += 1
+
 conn.commit()
 conn.close()
 
@@ -57,3 +70,8 @@ if new_listing_count == 1:
     print(f'{new_listing_count} new listing added to the database.\n')
 else:
     print(f'{new_listing_count} new listings added to the database.\n')
+
+if db_removed_count == 1:
+    print(f'{db_removed_count} listing removed from database.\n')
+else:
+    print(f'{db_removed_count} listings removed from database.\n')
