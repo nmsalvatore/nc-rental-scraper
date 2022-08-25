@@ -45,6 +45,8 @@ def get_paul_law_data():
             sqft_regex = re.compile(r'.*sqft.*')
             if sqft_regex.search(item.getText()):
                 sqft = get_int(item.getText())
+            else:
+                sqft = None
 
         listing_data = {
             'title': title,
