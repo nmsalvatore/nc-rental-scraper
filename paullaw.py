@@ -1,63 +1,61 @@
 import re
 import requests
 from bs4 import BeautifulSoup
-from utils import get_int
 
-def get_paul_law_data():
-    root = 'https://paullawpropertymanagement.managebuilding.com'
-    res = requests.get(root + '/Resident/public/rentals')
+def get_rentals():
+    root_path = 'https://paullawpropertymanagement.managebuilding.com'
+    res = requests.get(root_path + '/Resident/public/rentals')
     soup = BeautifulSoup(res.text, 'lxml')
 
     rentals = []
-
-    listings = soup.find_all(class_='featured-listing')
+    listing_class_name = 'featured-listing'
+    listings = soup.find_all(class_=listing_class_name)
     for listing in listings:
-        # get url
-        url = root + listing.get('href')
-
-        # get title
-        title = listing.find(class_='featured-listing__title').getText()
-
-        # get city
-        full_address = listing.find(class_='featured-listing__address').getText()
-        city_regex = re.compile(r'^(.*),')
-        city = city_regex.search(full_address).group(1)
-
-        # get price
-        price_str = listing.find(class_='featured-listing__price').getText()
-        price = get_int(price_str)
-
-        # render listing detail view
-        detail_view = requests.get(url)
-        detail_html = BeautifulSoup(detail_view.text, 'lxml')
-
-        # get bed, bath and square footage
-        unit_info = detail_html.find_all(class_='unit-detail__unit-info-item')
-        for item in unit_info:
-            bed_regex = re.compile(r'.*Bed.*')
-            if bed_regex.search(item.getText()):
-                bedrooms = get_int(item.getText())
-
-            bath_regex = re.compile(r'.*Bath.*')
-            if bath_regex.search(item.getText()):
-                bathrooms = get_int(item.getText())
-
-            sqft_regex = re.compile(r'.*sqft.*')
-            if sqft_regex.search(item.getText()):
-                sqft = get_int(item.getText())
-            else:
-                sqft = None
-
         listing_data = {
-            'title': title,
-            'city': city,
-            'price': price,
-            'bedrooms': bedrooms,
-            'bathrooms': bathrooms,
-            'sqft': sqft,
-            'url': url,
+            'title': get_title(listing),
+            'city': get_city(listing),
+            'price': get_price(listing),
+            'bedrooms': get_bedrooms(listing),
+            'bathrooms': get_bathrooms(listing),
+            'sqft': get_square_feet(listing),
+            'url': get_url(listing, root_path),
         }
-
         rentals.append(listing_data)
-
     return rentals
+
+def get_url(listing, root):
+    relative_path = listing.get('href')
+    absolute_path = root + relative_path
+    return absolute_path
+
+def get_title(listing):
+    title_class_name = 'featured-listing__title'
+    title_el = listing.find(class_=title_class_name)
+    title = title_el.getText()
+    return title
+
+def get_city(listing):
+    city_regex = re.compile(r'^(.*),')
+    city_match = re.search(city_regex, listing.get('data-location'))
+    city = city_match.group(1)
+    return city
+
+def get_price(listing):
+    price_str = listing.get('data-rent')
+    price = int(price_str)
+    return price
+
+def get_bedrooms(listing):
+    bedrooms = listing.get('data-bedrooms')
+    return bedrooms
+
+def get_bathrooms(listing):
+    bathrooms = listing.get('data-bathrooms')
+    return bathrooms
+
+def get_square_feet(listing):
+    sqft_str = listing.get('data-square-feet')
+    sqft = int(sqft_str)
+    if sqft == 0:
+        sqft = None
+    return sqft
