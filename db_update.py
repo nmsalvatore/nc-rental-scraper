@@ -89,6 +89,3 @@ def check_for_duplicate(cur, rental):
     """)
     duplicate = cur.fetchone()
     return duplicate
-
-
-update()
