@@ -5,3 +5,4 @@ requests-html
 selenium
 psycopg2-binary
 python-dotenv
+schedule
