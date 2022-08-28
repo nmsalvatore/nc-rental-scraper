@@ -1,27 +1,28 @@
 import itertools
-from paullaw import get_paul_law_data
-from collins import get_collins_data
-from pam import get_pam_data
-from acm import get_acm_data
-from grassroots import get_grass_roots_data
-from barrett import get_barrett_data
+
 from selenium import webdriver
 
-print('\nChecking for new listings...\n')
+import paullaw
+import collins
+import pam
+import acm
+import grassroots
+import barrett
 
-# get data using requests module
-paul_law_data = get_paul_law_data()
-
-# get data using selenium module
-driver = webdriver.Firefox()
-collins_data = get_collins_data(driver)
-pam_data = get_pam_data(driver)
-acm_data = get_acm_data(driver)
-grass_roots_data = get_grass_roots_data(driver)
-barrett_data = get_barrett_data(driver)
-driver.close()
 
 def get_all_rentals():
+    # get data using requests module
+    paul_law_data = paullaw.get_rentals()
+
+    # get data using selenium module
+    driver = webdriver.Firefox()
+    collins_data = collins.get_rentals(driver)
+    pam_data = pam.get_rentals(driver)
+    acm_data = acm.get_rentals(driver)
+    grass_roots_data = grassroots.get_rentals(driver)
+    barrett_data = barrett.get_rentals(driver)
+    driver.close()
+    
     all_rental_data = [
         paul_law_data,
         collins_data,
