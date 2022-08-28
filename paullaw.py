@@ -10,6 +10,9 @@ def get_rentals():
     rentals = []
     listing_class_name = 'featured-listing'
     listings = soup.find_all(class_=listing_class_name)
+
+    print(f'Scanning {len(listings)} listings on https://www.paullawpropertymanagement.com/')
+
     for listing in listings:
         listing_data = {
             'title': get_title(listing),
