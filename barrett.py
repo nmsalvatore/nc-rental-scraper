@@ -1,68 +1,99 @@
 import re
 import time
 from bs4 import BeautifulSoup
-from selenium import webdriver
-from utils import get_int
 
-def get_barrett_data(driver):
-    # render Collins Property Management rental list
-    driver.get('https://barrettpm.com/residential-rentals/')
-    time.sleep(2)
+def get_rentals(driver):
+    # get source code and parse document as xml
+    root_path = 'https://barrettpm.com/residential-rentals/'
+    driver.get(root_path)
+    time.sleep(10)
     soup = BeautifulSoup(driver.page_source, 'lxml')
 
+    # initialize rental list
     rentals = []
+
+    # get elements for all rental listings
     listings = soup.find_all(class_='tt-rental-row')
+
+    print(f'Scanning {len(listings)-1} listings on https://www.barrettpm.com/')
+
+    # get data from each rental listing and add to rental list
     for listing in listings:
         # ignore listing elements that don't have a header
         listing_header = listing.select('h4 a')
         if not listing_header:
             continue
-
-        # get url
-        url = listing_header[0].get('href')
-        
-        # get title
-        title = listing_header[0].getText()
-
-        # get city
-        city = listing.get('data-city')
-
-        # get price
-        price = int(float(listing.get('data-rent-amount')))
-
-        # get bedrooms
-        bed_str = listing.get('data-beds')
-        try:
-            bedrooms = int(bed_str)
-        except:
-            bedrooms = float(bed_str)
-
-        # get bathrooms
-        bath_str = listing.get('data-baths')
-        try:
-            bathrooms = int(bath_str)
-        except:
-            bathrooms = float(bath_str)
-
-        # get square footage
-        # TODO: remove dependence on 'Parking' in regex; clean up this whole section
-        description = listing.select('.rental-description p')[0]
-        sqft_regex = re.compile(r'Square Feet:(.*)<br/>Parking?')
-        try:
-            sqft = get_int(re.search(sqft_regex, str(description)).group(1))
-        except:
-            sqft = None
         
         listing_data = {
-            'title': title,
-            'city': city,
-            'price': price,
-            'bedrooms': bedrooms,
-            'bathrooms': bathrooms,
-            'sqft': sqft,
-            'url': url,
+            'title': get_title(listing),
+            'city': get_city(listing),
+            'price': get_price(listing),
+            'bedrooms': get_bedrooms(listing),
+            'bathrooms': get_bathrooms(listing),
+            'sqft': get_sqft(listing),
+            'url': get_url(listing),
         }
-
         rentals.append(listing_data)
     
     return rentals
+
+
+def get_url(listing):
+    try:
+        listing_header = listing.select('h4 a')
+        url = listing_header[0].get('href')
+        return url
+    except:
+        return None
+
+
+def get_title(listing):
+    try:
+        listing_header = listing.select('h4 a')
+        title = listing_header[0].getText()
+        return title
+    except:
+        return None
+
+
+def get_city(listing):
+    try:
+        city = listing.get('data-city')
+        return city
+    except:
+        return None
+
+
+def get_price(listing):
+    try:
+        price = int(float(listing.get('data-rent-amount')))
+        return price
+    except:
+        return None
+
+
+def get_bedrooms(listing):
+    try:
+        bedrooms = listing.get('data-beds')
+        return bedrooms
+    except:
+        return None
+
+
+def get_bathrooms(listing):
+    try:
+        bathrooms = listing.get('data-baths')
+        return bathrooms
+    except:
+        return None
+
+
+def get_sqft(listing):
+    try:
+        description = listing.select('.rental-description p')[0]
+        regex = re.compile(r'Square Feet:(.*?)<br\/>')
+        sqft_text = re.search(regex, str(description)).group(1)
+        sqft = ''.join(re.findall(r'\d+', sqft_text))
+        return sqft
+    except:
+        return None
