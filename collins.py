@@ -17,7 +17,9 @@ def get_rentals(driver):
     listing_class_name = 'listing-container'
     listings = soup.find_all(class_=listing_class_name)
 
-    # get data from each rental listing
+    print(f'Scanning {len(listings)} listings on {root_path}/')
+
+    # get data from each rental listing and add to rental list
     for listing in listings:
         listing_data = {
             'title': get_title(listing),
@@ -28,7 +30,6 @@ def get_rentals(driver):
             'sqft': get_sqft(listing),
             'url': get_url(listing, root_path),
         }
-
         rentals.append(listing_data)    
 
     return rentals
