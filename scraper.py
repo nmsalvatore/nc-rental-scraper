@@ -1,6 +1,7 @@
 import itertools
 
 from selenium import webdriver
+from selenium.webdriver.firefox.options import Options
 
 import paullaw
 import collins
@@ -15,7 +16,9 @@ def get_all_rentals():
     paul_law_data = paullaw.get_rentals()
 
     # get data using selenium module
-    driver = webdriver.Firefox()
+    firefox_options = Options()
+    firefox_options.headless = True
+    driver = webdriver.Firefox(options=firefox_options)
     collins_data = collins.get_rentals(driver)
     pam_data = pam.get_rentals(driver)
     acm_data = acm.get_rentals(driver)
