@@ -50,15 +50,21 @@ def get_price(listing):
 
 def get_bedrooms(listing):
     bedrooms = listing.get('data-bedrooms')
-    return bedrooms
+    try:
+        bedrooms = int(bedrooms)
+    except:
+        bedrooms = float(bedrooms)
+    return bedrooms or None
 
 def get_bathrooms(listing):
     bathrooms = listing.get('data-bathrooms')
-    return bathrooms
+    try:
+        bathrooms = int(bathrooms)
+    except:
+        bathrooms = float(bathrooms)
+    return bathrooms or None
 
 def get_square_feet(listing):
     sqft_str = listing.get('data-square-feet')
     sqft = int(sqft_str)
-    if sqft == 0:
-        sqft = None
-    return sqft
+    return sqft or None
