@@ -5,11 +5,16 @@ from bs4 import BeautifulSoup
 def get_rentals():
     root_path = 'https://paullawpropertymanagement.managebuilding.com'
     res = requests.get(root_path + '/Resident/public/rentals')
-    soup = BeautifulSoup(res.text, 'lxml')
+    
+    # check for listings until listings are found
+    # TODO: check if there are no actual listings
+    listings = None
+    while not listings:
+        soup = BeautifulSoup(res.text, 'lxml')
+        listing_class_name = 'featured-listing'
+        listings = soup.find_all(class_=listing_class_name)
 
     rentals = []
-    listing_class_name = 'featured-listing'
-    listings = soup.find_all(class_=listing_class_name)
 
     print(f'Scanning {len(listings)} listings on https://www.paullawpropertymanagement.com/')
 

@@ -7,15 +7,17 @@ def get_rentals(driver):
     # get source code and parse document as xml
     root_path = 'https://www.collinspropertymanagement.net'
     driver.get(root_path + '/grass-valley-homes-for-rent')
-    time.sleep(2)
-    soup = BeautifulSoup(driver.page_source, 'lxml')
+
+    # check for listings until listings are found
+    # TODO: check if there are no actual listings
+    listings = None
+    while not listings:
+        soup = BeautifulSoup(driver.page_source, 'lxml')
+        listing_class_name = 'listing-container'
+        listings = soup.find_all(class_=listing_class_name)
 
     # initialize rental list
     rentals = []
-
-    # get elements for all rental listings
-    listing_class_name = 'listing-container'
-    listings = soup.find_all(class_=listing_class_name)
 
     print(f'Scanning {len(listings)} listings on {root_path}/')
 

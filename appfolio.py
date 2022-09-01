@@ -5,14 +5,16 @@ from bs4 import BeautifulSoup
 def get_rentals(driver, root_path, listing_path):
     # get source code and parse document as xml
     driver.get(root_path + listing_path)
-    time.sleep(2)
-    soup = BeautifulSoup(driver.page_source, 'lxml')
+    
+    # check for listings until listings are found
+    # TODO: check if there are no actual listings    
+    listings = None
+    while not listings:
+        soup = BeautifulSoup(driver.page_source, 'lxml')
+        listings = soup.find_all(class_='listing-item')
 
     # initialize rental list
     rentals = []
-
-    # get elements for all rental listings
-    listings = soup.find_all(class_='listing-item')
     
     print(f'Scanning {len(listings)} listings on {root_path}/')
 
