@@ -1,5 +1,4 @@
 import re
-import time
 from bs4 import BeautifulSoup
 
 def get_rentals(driver, root_path, listing_path):
