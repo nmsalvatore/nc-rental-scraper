@@ -2,22 +2,29 @@ from datetime import datetime
 import scraper
 import db_connect
 
-
 def update():
-    print('\nPerforming update on database...\n')
     conn = db_connect.connect()
     cur = conn.cursor()
+    changes_made_to_db = False
+
     rentals = scraper.get_all_rentals()
     for rental in rentals:
         duplicate = check_for_duplicate(cur, rental)
         if not duplicate:
             rental_data = get_rental_data(rental)
             add_to_db(cur, rental_data)
-            print(f"'{rental.get('title')}' added to database.")
-    remove_old_listings(cur, rentals)
+            changes_made_to_db = True
+    
+    listings_removed = remove_old_listings(cur, rentals)
+    if listings_removed:
+        changes_made_to_db = True
+
+    if not changes_made_to_db:
+        update_time = current_time_formatted()
+        print(update_time, 'No changes made to database.')
+
     conn.commit()
     conn.close()
-    print('\nUpdate complete.\n')
 
 
 def get_rental_data(rental):
@@ -64,6 +71,8 @@ def add_to_db(cur, rental_data):
             url
         ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
     """, rental_data)
+    update_time = current_time_formatted()
+    print(update_time, f"'{rental_data[0]}' added to database.")
 
 
 def remove_from_db(cur, url):
@@ -79,7 +88,10 @@ def remove_old_listings(cur, rentals):
             """)
             title = cur.fetchone()[0]
             remove_from_db(cur, url)
-            print(f"'{title}' removed from database.")
+            update_time = current_time_formatted()
+            print(update_time, f"'{title}' removed from database.")
+        return True
+    return False
 
 
 def check_for_duplicate(cur, rental):
@@ -89,3 +101,7 @@ def check_for_duplicate(cur, rental):
     """)
     duplicate = cur.fetchone()
     return duplicate
+
+
+def current_time_formatted():
+    return datetime.now().strftime('%m/%d/%y %H:%M:%S')
