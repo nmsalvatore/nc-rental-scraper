@@ -16,8 +16,6 @@ def get_rentals():
 
     rentals = []
 
-    print(f'Scanning {len(listings)} listings on https://www.paullawpropertymanagement.com/')
-
     for listing in listings:
         listing_data = {
             'title': get_title(listing),

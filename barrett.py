@@ -17,8 +17,6 @@ def get_rentals(driver):
     # initialize rental list
     rentals = []
 
-    print(f'Scanning {len(listings)-1} listings on https://www.barrettpm.com/')
-
     # get data from each rental listing and add to rental list
     for listing in listings:
         # ignore listing elements that don't have a header

@@ -19,8 +19,6 @@ def get_rentals(driver):
     # initialize rental list
     rentals = []
 
-    print(f'Scanning {len(listings)} listings on {root_path}/')
-
     # get data from each rental listing and add to rental list
     for listing in listings:
         listing_data = {
