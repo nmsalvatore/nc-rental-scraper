@@ -9,6 +9,7 @@ import pam
 import acm
 import grassroots
 import barrett
+import mvalley
 
 
 def get_all_rentals():
@@ -24,6 +25,7 @@ def get_all_rentals():
     acm_data = acm.get_rentals(driver)
     grass_roots_data = grassroots.get_rentals(driver)
     barrett_data = barrett.get_rentals(driver)
+    mvalley_data = mvalley.get_rentals(driver)
     driver.close()
     
     all_rental_data = [
@@ -32,7 +34,8 @@ def get_all_rentals():
         pam_data,
         acm_data,
         grass_roots_data,
-        barrett_data
+        barrett_data,
+        mvalley_data
     ]
 
     return list(itertools.chain(*all_rental_data))
