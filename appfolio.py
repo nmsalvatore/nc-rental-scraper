@@ -70,7 +70,7 @@ def get_bedrooms(listing):
     try:
         bed_element = listing.find(class_='beds')
         bed_text = bed_element.getText()
-        regex = re.compile(r'^(.*)beds')
+        regex = re.compile(r'^(.*)bed')
         return re.search(regex, bed_text).group(1).strip()
     except:
         return None
