@@ -10,7 +10,41 @@ def update():
     rentals = scraper.get_all_rentals()
     for rental in rentals:
         duplicate = check_for_duplicate(cur, rental)
-        if not duplicate:
+        if duplicate:
+            url = rental.get('url')
+            db_entry = get_db_entry_by_url(cur, url)
+            
+            price = rental.get('price')
+            if price != db_entry[4]:
+                update_db_entry(cur, 'price', price, url)
+                changes_made_to_db = True
+
+            title = rental.get('title')
+            if title != db_entry[1]:
+                update_db_entry(cur, 'title', title, url)
+                changes_made_to_db = True
+
+            bathrooms = rental.get('bathrooms')
+            if bathrooms != db_entry[5]:
+                update_db_entry(cur, 'bathrooms', bathrooms, url)
+                changes_made_to_db = True
+
+            bedrooms = rental.get('bedrooms')
+            if bedrooms != db_entry[6]:
+                update_db_entry(cur, 'bedrooms', bedrooms, url)
+                changes_made_to_db = True
+
+            sqft = rental.get('sqft')
+            if sqft != db_entry[7]:
+                update_db_entry(cur, 'sqft', sqft, url)
+                changes_made_to_db = True
+
+            city = rental.get('city')
+            if city != db_entry[9]:
+                update_db_entry(cur, 'city', city, url)
+                changes_made_to_db = True
+                
+        else:
             rental_data = get_rental_data(rental)
             add_to_db(cur, rental_data)
             changes_made_to_db = True
@@ -25,6 +59,27 @@ def update():
 
     conn.commit()
     conn.close()
+
+
+def update_db_entry(cur, update_field, update_value, url):
+    if update_value:
+        cur.execute(f"""
+            UPDATE nc_rentals_listing 
+            SET {update_field} = '{update_value}' 
+            WHERE url = '{url}'
+        """)
+    else:
+        cur.execute(f"""
+            UPDATE nc_rentals_listing 
+            SET {update_field} = Null 
+            WHERE url = '{url}'
+        """)
+    update_time = current_time_formatted()
+    cur.execute(f"""
+        SELECT id FROM nc_rentals_listing WHERE url = '{url}'
+    """)
+    listing_id = cur.fetchone()[0]
+    print(update_time, f'Update to {update_field} field on listing #{listing_id}.')
 
 
 def get_rental_data(rental):
@@ -56,6 +111,11 @@ def get_db_urls(cur):
     cur.execute(f'SELECT url FROM nc_rentals_listing')
     db_urls = cur.fetchall()
     return db_urls
+
+
+def get_db_entry_by_url(cur, url):
+    cur.execute(f"SELECT * FROM nc_rentals_listing WHERE url = '{url}'")
+    return cur.fetchone()
 
 
 def add_to_db(cur, rental_data):
