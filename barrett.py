@@ -82,7 +82,12 @@ def get_bedrooms(listing):
 
 def get_bathrooms(listing):
     try:
-        bathrooms = listing.get('data-baths')
+        bathroom_text = listing.get('data-baths')
+        regex = re.compile(r'(\d+)\.0')
+        converts_to_int = re.search(regex, bathroom_text)
+        if converts_to_int:
+            bathrooms = converts_to_int.group(1)
+            return bathrooms
         return bathrooms
     except:
         return None
