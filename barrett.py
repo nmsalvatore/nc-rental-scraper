@@ -1,5 +1,5 @@
 import re
-import time
+from time import time
 from bs4 import BeautifulSoup
 
 def get_rentals(driver):
@@ -7,12 +7,18 @@ def get_rentals(driver):
     root_path = 'https://barrettpm.com/residential-rentals/'
     driver.get(root_path)
 
-    # check for listings until listings are found
-    # TODO: check if there are no actual listings
-    listings = None
-    while not listings:
+    # search for listings until listings are found or 20 seconds elapsed
+    listings = []
+    time_start = time()
+    time_elapsed = 0
+    while not listings and time_elapsed < 20:
         soup = BeautifulSoup(driver.page_source, 'lxml')
         listings = soup.find_all(class_='tt-rental-row')
+        time_elapsed = time() - time_start
+
+    # if 20 seconds elapsed and no listings found, return empty list
+    if not listings:
+        return listings
 
     # initialize rental list
     rentals = []

@@ -1,5 +1,6 @@
 import re
 import requests
+from time import time
 from bs4 import BeautifulSoup
 
 
@@ -7,11 +8,17 @@ def get_rentals():
     root_path = 'https://paullawpropertymanagement.managebuilding.com'
     res = requests.get(root_path + '/Resident/public/rentals')
     
-    listings = None
-    while not listings:
+    listings = []
+    time_start = time()
+    time_elapsed = 0
+    while not listings and time_elapsed < 10:
         soup = BeautifulSoup(res.text, 'lxml')
         listing_class_name = 'featured-listing'
         listings = soup.find_all(class_=listing_class_name)
+        time_elapsed = time() - time_start
+
+    if not listings:
+        return listings
 
     rentals = []
 
