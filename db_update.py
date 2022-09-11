@@ -1,64 +1,72 @@
 from datetime import datetime
+import traceback
 import scraper
 import db_connect
 
 def update():
-    conn = db_connect.connect()
-    cur = conn.cursor()
-    changes_made_to_db = False
+    try:
+        conn = db_connect.connect()
+        cur = conn.cursor()
+        changes_made_to_db = False
 
-    rentals = scraper.get_all_rentals()
-    for rental in rentals:
-        duplicate = check_for_duplicate(cur, rental)
-        if duplicate:
-            url = rental.get('url')
-            db_entry = get_db_entry_by_url(cur, url)
-            
-            price = rental.get('price')
-            if price != db_entry[4]:
-                update_db_entry(cur, 'price', price, url)
-                changes_made_to_db = True
-
-            title = rental.get('title')
-            if title != db_entry[1]:
-                update_db_entry(cur, 'title', title, url)
-                changes_made_to_db = True
-
-            bathrooms = rental.get('bathrooms')
-            if bathrooms != db_entry[5]:
-                update_db_entry(cur, 'bathrooms', bathrooms, url)
-                changes_made_to_db = True
-
-            bedrooms = rental.get('bedrooms')
-            if bedrooms != db_entry[6]:
-                update_db_entry(cur, 'bedrooms', bedrooms, url)
-                changes_made_to_db = True
-
-            sqft = rental.get('sqft')
-            if sqft != db_entry[7]:
-                update_db_entry(cur, 'sqft', sqft, url)
-                changes_made_to_db = True
-
-            city = rental.get('city')
-            if city != db_entry[9]:
-                update_db_entry(cur, 'city', city, url)
-                changes_made_to_db = True
+        rentals = scraper.get_all_rentals()
+        for rental in rentals:
+            duplicate = check_for_duplicate(cur, rental)
+            if duplicate:
+                url = rental.get('url')
+                db_entry = get_db_entry_by_url(cur, url)
                 
-        else:
-            rental_data = get_rental_data(rental)
-            add_to_db(cur, rental_data)
+                price = rental.get('price')
+                if price != db_entry[4]:
+                    update_db_entry(cur, 'price', price, url)
+                    changes_made_to_db = True
+
+                title = rental.get('title')
+                if title != db_entry[1]:
+                    update_db_entry(cur, 'title', title, url)
+                    changes_made_to_db = True
+
+                bathrooms = rental.get('bathrooms')
+                if bathrooms != db_entry[5]:
+                    update_db_entry(cur, 'bathrooms', bathrooms, url)
+                    changes_made_to_db = True
+
+                bedrooms = rental.get('bedrooms')
+                if bedrooms != db_entry[6]:
+                    update_db_entry(cur, 'bedrooms', bedrooms, url)
+                    changes_made_to_db = True
+
+                sqft = rental.get('sqft')
+                if sqft != db_entry[7]:
+                    update_db_entry(cur, 'sqft', sqft, url)
+                    changes_made_to_db = True
+
+                city = rental.get('city')
+                if city != db_entry[9]:
+                    update_db_entry(cur, 'city', city, url)
+                    changes_made_to_db = True
+                    
+            else:
+                rental_data = get_rental_data(rental)
+                add_to_db(cur, rental_data)
+                changes_made_to_db = True
+        
+        listings_removed = remove_old_listings(cur, rentals)
+        if listings_removed:
             changes_made_to_db = True
-    
-    listings_removed = remove_old_listings(cur, rentals)
-    if listings_removed:
-        changes_made_to_db = True
 
-    if not changes_made_to_db:
+        if not changes_made_to_db:
+            update_time = current_time_formatted()
+            print(update_time, 'No changes made to database.')
+
+        conn.commit()
+        conn.close()
+    except:
         update_time = current_time_formatted()
-        print(update_time, 'No changes made to database.')
-
-    conn.commit()
-    conn.close()
+        with open('error_log.txt', 'a') as f:
+            exception = traceback.format_exc()
+            f.write(update_time + '\n' + exception + '\n')
+        print(update_time, 'Update failed.')
 
 
 def update_db_entry(cur, update_field, update_value, url):
