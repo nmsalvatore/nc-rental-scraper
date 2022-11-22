@@ -1,0 +1,8 @@
+bs4
+lxml
+requests
+requests-html
+selenium
+psycopg2-binary
+python-dotenv
+schedule
