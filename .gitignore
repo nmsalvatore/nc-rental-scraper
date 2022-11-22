@@ -1,13 +1,7 @@
-<<<<<<< HEAD
 *.log
 *.pot
 *.pyc
 __pycache__
 venv
 .env
-=======
-.env
-venv
-__pycache__
 error_log.txt
->>>>>>> update

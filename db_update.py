@@ -65,13 +65,8 @@ def update():
         update_time = current_time_formatted()
         with open('error_log.txt', 'a') as f:
             exception = traceback.format_exc()
-<<<<<<< HEAD
-            f.write(update_time + '\n' + exception + '\n')
-        print(update_time, 'Update failed.')
-=======
             f.write('>>> ' + update_time + '\n\n' + exception + '\n')
         print(update_time, 'Update failed. Please view error log for details')
->>>>>>> update
 
 
 def update_db_entry(cur, update_field, update_value, url):

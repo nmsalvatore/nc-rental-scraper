@@ -2,10 +2,6 @@ import time
 import schedule
 import db_update
 
-<<<<<<< HEAD
-print('\nNOTE: Updates will occur every hour on the hour.\n')
-schedule.every().hour.at(':00').do(db_update.update)
-=======
 
 def get_formatted_times_in_range(first_hour, final_hour):
     times = []
@@ -26,7 +22,6 @@ def schedule_updates():
 print()
 
 schedule_updates()
->>>>>>> update
 while True:
     schedule.run_pending()
     time.sleep(1)
