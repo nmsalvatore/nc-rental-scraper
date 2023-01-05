@@ -111,7 +111,9 @@ def get_old_urls(cur, rentals):
         url = url[0]
         if url in new_urls:
             continue
-        old_urls.append(url)
+        else:
+            old_urls.append(url)
+    # TODO: before returning the urls to be removed, double check by running scraper.get_all_rentals() again
     return old_urls
 
 
@@ -149,16 +151,24 @@ def remove_from_db(cur, url):
 
 def remove_old_listings(cur, rentals):
     old_urls = get_old_urls(cur, rentals)
+
     if old_urls:
-        for url in old_urls:
-            cur.execute(f"""
-                SELECT title FROM nc_rentals_listing WHERE url = '{url}'
-            """)
-            title = cur.fetchone()[0]
-            remove_from_db(cur, url)
-            update_time = current_time_formatted()
-            print(update_time, f"'{title}' removed from database.")
-        return True
+        print('Found old listings')
+        # double check to make sure that old urls are actually old
+        rentals = scraper.get_all_rentals()
+        old_urls_check = get_old_urls(cur, rentals)
+        
+        if old_urls == old_urls_check:
+            print('Old listings confirmed.')
+            for url in old_urls:
+                cur.execute(f"""
+                    SELECT title FROM nc_rentals_listing WHERE url = '{url}'
+                """)
+                title = cur.fetchone()[0]
+                remove_from_db(cur, url)
+                update_time = current_time_formatted()
+                print(update_time, f"'{title}' removed from database.")
+            return True
     return False
 
 
