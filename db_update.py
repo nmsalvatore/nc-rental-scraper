@@ -113,7 +113,6 @@ def get_old_urls(cur, rentals):
             continue
         else:
             old_urls.append(url)
-    # TODO: before returning the urls to be removed, double check by running scraper.get_all_rentals() again
     return old_urls
 
 
@@ -154,7 +153,6 @@ def remove_old_listings(cur, rentals):
 
     if old_urls:
         print('Found old listings')
-        # double check to make sure that old urls are actually old
         rentals = scraper.get_all_rentals()
         old_urls_check = get_old_urls(cur, rentals)
         
