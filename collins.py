@@ -35,6 +35,7 @@ def get_rentals(driver):
             'bathrooms': get_bathrooms(listing),
             'sqft': get_sqft(listing),
             'url': get_url(listing, root_path),
+            'company': 'Collins Property Management',
         }
         rentals.append(listing_data)    
 

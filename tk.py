@@ -30,6 +30,7 @@ def get_rentals():
             'bathrooms': get_bathrooms(listing),
             'sqft': get_square_feet(listing),
             'url': get_url(listing, root_path),
+            'company': 'TK Property Group, Inc.'
         }
         rentals.append(listing_data)
     return rentals

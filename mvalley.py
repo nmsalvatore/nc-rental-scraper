@@ -32,6 +32,7 @@ def get_rentals(driver):
             'bathrooms': get_bathrooms(listing),
             'sqft': get_sqft(listing),
             'url': get_url(listing),
+            'company': 'Mountain Valley Property Management, Inc.'
         }
         rentals.append(listing_data)
 

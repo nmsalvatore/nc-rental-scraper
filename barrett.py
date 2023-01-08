@@ -38,6 +38,7 @@ def get_rentals(driver):
             'bathrooms': get_bathrooms(listing),
             'sqft': get_sqft(listing),
             'url': get_url(listing),
+            'company': 'Barrett & Associates',
         }
         rentals.append(listing_data)
     

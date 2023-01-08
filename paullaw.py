@@ -31,6 +31,7 @@ def get_rentals():
             'bathrooms': get_bathrooms(listing),
             'sqft': get_square_feet(listing),
             'url': get_url(listing, root_path),
+            'company': 'Paul Law Property Management'
         }
         rentals.append(listing_data)
     return rentals

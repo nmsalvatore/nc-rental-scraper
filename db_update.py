@@ -99,7 +99,8 @@ def get_rental_data(rental):
         rental.get('bedrooms'),
         rental.get('bathrooms'),
         rental.get('sqft'),
-        rental.get('url')
+        rental.get('url'),
+        rental.get('company')
     )
 
 
@@ -137,8 +138,9 @@ def add_to_db(cur, rental_data):
             bedrooms, 
             bathrooms, 
             sqft, 
-            url
-        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
+            url,
+            company
+        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);
     """, rental_data)
     update_time = current_time_formatted()
     print(update_time, f"'{rental_data[0]}' added to database.")
