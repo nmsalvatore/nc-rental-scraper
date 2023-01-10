@@ -45,6 +45,11 @@ def update():
                 if city != db_entry[9]:
                     update_db_entry(cur, 'city', city, url)
                     changes_made_to_db = True
+
+                company = rental.get('company')
+                if company != db_entry[10]:
+                    update_db_entry(cur, 'company', company, url)
+                    changes_made_to_db = True
                     
             else:
                 rental_data = get_rental_data(rental)
